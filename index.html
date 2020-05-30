@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redes neuronales</title>
+
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      header {
+        background-color: rgb(37, 34, 34);
+        color: white;
+        height: 10vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        width: 100%;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        min-height: 80vh;
+      }
+
+      #sitio {
+        padding: 5rem;
+        font-size: 5rem;
+        margin: 1rem;
+        align-self: center;
+      }
+
+      input {
+        width: 200px;
+        height: 30px;
+        align-self: center;
+      }
+
+      footer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 20vh;
+        background-color: rgb(37, 34, 34);
+        color: white;
+      }
+
+      .integrantes {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      @media only screen and (max-width: 570px) {
+        .container {
+          position: relative;
+          top: 10vh;
+          width: 100%;
+          margin: auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        input {
+          justify-content: center;
+          align-self: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header id="encabezado">
+      <h2>Proyecto final: Red Neuronal</h2>
+    </header>
+    <div class="container">
+      <input class="jscolor {onFineChange:'update(this)'}" value="cc66ff" />
+      <div id="sitio">
+        Red Neuronal
+      </div>
+    </div>
+    <footer id="pieDePagina">
+      <span class="tituloProyecto"><h3>Inteligencia artificial</h3></span>
+      <br />
+      <span class="integrantes"
+        ><h3>
+          Edson Juarez 0900-16-453
+        </h3>
+        <h3>Allan Letona 0900-16-5898</h3>
+        <h3>Vinicio Estrada 0900-16-5936</h3>
+        <h3>Diego Gomez 0900-16-981</h3>
+      </span>
+    </footer>
+
+    <script src="jscolor.js"></script>
+    <script src="https://unpkg.com/brain.js"></script>
+
+    <script type="text/javascript">
+      // Inicializar red neuronal
+      var redNeuronal = new brain.NeuralNetwork();
+
+      // Entrenar a la red neuronal dandole ejemplos de cuando poner texto blanco o negro según el color de fondo.
+      redNeuronal.train([
+        // Fondo negro = texto en blanco
+        { input: { rojo: 0, verde: 0, azul: 0 }, output: { color: 1 } },
+        // Fondo blanco = texto en negro
+        { input: { rojo: 1, verde: 1, azul: 0 }, output: { color: 0 } },
+        // Fondo verde = texto en negro
+        { input: { rojo: 0, verde: 1, azul: 0 }, output: { color: 0 } },
+      ]);
+
+      function update(color) {
+        console.log(color.rgb);
+        var div = document.getElementById("sitio");
+        div.style.background = "#" + color;
+
+        var encabezado = document.getElementById("encabezado");
+        encabezado.style.background = "#" + color;
+
+        // Tomar el color de fondo actual seleccionado por el usuario para usarlo de entrada
+        // para que la red neuronal de su predicción del color de texto a utilizar.
+        var entrada = {
+          rojo: color.rgb[0] / 255,
+          verde: color.rgb[1] / 255,
+          azul: color.rgb[2] / 255,
+        };
+
+        var resultado = redNeuronal.run(entrada);
+        console.log(resultado);
+
+        if (resultado.color > 0.5) {
+          div.style.color = "white";
+          encabezado.style.color = "white";
+        } else {
+          div.style.color = "black";
+          encabezado.style.color = "black";
+        }
+      }
+    </script>
+  </body>
+</html>
